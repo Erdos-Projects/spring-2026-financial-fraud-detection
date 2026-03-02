@@ -6,3 +6,4 @@ data/
 XGBoost/elliptic_txs_edgelist.csv
 XGBoost/elliptic_txs_features.csv
 XGBoost/elliptic_txs_classes.csv
+data_get_info.ipynb
