@@ -1,0 +1,141 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{left=1in, right=1in, top=1in, bottom=1in}
+\usepackage{graphicx}       % For handling images
+\usepackage{booktabs}       % For professional tables
+\usepackage{hyperref}       % For clickable links
+\usepackage{amsmath, amsfonts} % For mathematical equations
+\usepackage{enumitem}       % For list formatting
+\usepackage{titlesec}       % For custom section formatting
+\usepackage{xcolor}         % For colors
+
+% --- Hyperlink Setup ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Fraud Detection GNN Proposal},
+}
+
+% --- Title Information ---
+\title{\textbf{Project Proposal: Financial Fraud Detection using Graph Neural Networks (GNNs)}}
+% \author{\textbf{Your Name} \\ Data Science Project Proposal}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+% \begin{abstract}
+% \noindent Financial fraud is a persistent and evolving threat to the global economy. Traditional detection methods, which analyze transactions in isolation, often fail to identify sophisticated fraud rings. This project proposes the implementation of Graph Neural Networks (GNNs) to model financial data as a network structure. By leveraging the relational information between entities, we aim to detect complex fraudulent patterns with higher accuracy and robustness than standard tabular machine learning models.
+% \end{abstract}
+
+\vspace{0.5cm}
+
+\section{Executive Summary}
+Financial fraud costs the global economy billions annually. Traditional fraud detection systems primarily rely on tabular data—analyzing individual transactions independently—or rigid rule-based systems. These methods often fail to capture the complex relationships, such as layering and collusion, that are indicative of organized fraud rings.
+
+This project proposes the use of \textbf{Graph Neural Networks (GNNs)} to detect fraud. By representing financial data as a graph $G = (V, E)$—where users are nodes and transactions are edges—we can leverage structural information and interaction patterns to identify suspicious activities with significantly higher accuracy.
+
+\section{Problem Statement}
+Fraudsters rarely act in isolation. They collaborate, transfer funds through multiple accounts, and share device fingerprints. Standard models (e.g., Random Forest, Logistic Regression) typically treat data points as independent and identically distributed (i.i.d.), thereby ignoring these crucial connections.
+
+\subsection*{Key Challenges}
+\begin{itemize}[noitemsep]
+    \item \textbf{Imbalanced Data:} Fraudulent transactions are extremely rare ($<1\%$ of data).
+    \item \textbf{Camouflage:} Fraudsters actively attempt to mimic legitimate behavior.
+    \item \textbf{Evolving Patterns:} Fraud techniques change rapidly to bypass static rules.
+\end{itemize}
+
+\section{Solution: Graph Neural Networks (GNNs)}
+GNNs are deep learning models designed to process data represented as graphs. Unlike tabular models, GNNs learn not just from the features of a specific node (e.g., transaction amount), but also from the features of its neighbors and the local network topology.
+
+\subsection*{Why GNNs for Fraud?}
+\begin{itemize}
+    \item \textbf{Homophily:} Fraudsters tend to connect with other fraudsters.
+    \item \textbf{Structure Learning:} Patterns like cycles (A $\to$ B $\to$ C $\to$ A) are easily detected in graphs but are difficult to see in tabular views.
+    \item \textbf{Edge Features:} The relationship itself (e.g., frequency of interaction) becomes a powerful feature.
+\end{itemize}
+
+\section{Methodology \& Architecture}
+
+\subsection{Phase 1: Data Acquisition \& Preprocessing}
+We will utilize a benchmark dataset such as the \textbf{Elliptic Data Set} (Bitcoin transaction graph) or the \textbf{IEEE-CIS Fraud Detection} dataset.
+\begin{itemize}
+    \item \textbf{Graph Construction:}
+    \begin{itemize}
+        \item \textit{Nodes ($V$):} Accounts, Transactions, or Entities (e.g., Device ID).
+        \item \textit{Edges ($E$):} Financial transfers, shared devices, or social connections.
+    \end{itemize}
+    \item \textbf{Feature Engineering:} Node features $x_v$ (balance, age) and Edge features $e_{uv}$ (amount, timestamp).
+\end{itemize}
+
+\subsection{Phase 2: Model Selection \& Mathematical Formulation}
+We will implement \textbf{GraphSAGE} (Sample and AggreGatE), an inductive framework suitable for evolving graphs.
+
+The update rule for a node $v$ at layer $k$ is defined as:
+
+\begin{equation}
+    h_{\mathcal{N}(v)}^{(k)} = \text{AGGREGATE}_k \left( \{ h_u^{(k-1)}, \forall u \in \mathcal{N}(v) \} \right)
+\end{equation}
+
+\begin{equation}
+    h_v^{(k)} = \sigma \left( W^{(k)} \cdot \text{CONCAT}(h_v^{(k-1)}, h_{\mathcal{N}(v)}^{(k)}) \right)
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $h_v^{(k)}$ is the embedding of node $v$ at layer $k$.
+    \item $\mathcal{N}(v)$ is the neighborhood of node $v$.
+    \item $\text{AGGREGATE}$ is a differentiable function (e.g., Mean, Max, or LSTM).
+    \item $W^{(k)}$ represents the weight matrix to be learned.
+\end{itemize}
+
+\subsection{Phase 3: Training \& Evaluation}
+To handle the class imbalance, we will use a weighted \textbf{Cross-Entropy Loss} or \textbf{Focal Loss}. Evaluation will focus on metrics robust to imbalance:
+\begin{itemize}
+    \item \textbf{AUC-ROC:} Area Under the Receiver Operating Characteristic Curve.
+    \item \textbf{Precision-Recall AUC:} Crucial for highly imbalanced classes.
+    \item \textbf{F1-Score:} The harmonic mean of precision and recall.
+\end{itemize}
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Category} & \textbf{Tools} \\
+        \midrule
+        Language & Python 3.9+ \\
+        Deep Learning Framework & PyTorch or TensorFlow \\
+        Graph Libraries & \textbf{PyTorch Geometric (PyG)} or Deep Graph Library (DGL) \\
+        Data Manipulation & Pandas, NumPy, NetworkX \\
+        Visualization & Gephi (for graph viz), Matplotlib \\
+        Compute & Google Colab (GPU) or AWS SageMaker \\
+        \bottomrule
+    \end{tabular}
+    \caption{Proposed Technology Stack}
+    \label{tab:tech_stack}
+\end{table}
+
+% \section{Project Timeline (Estimated 10 Weeks)}
+% \begin{description}
+%     \item[Weeks 1-2:] Literature review and dataset acquisition. Exploratory Data Analysis (EDA) to understand graph topology.
+%     \item[Weeks 3-4:] Graph construction and preprocessing. Converting tabular data into adjacency matrices and edge lists.
+%     \item[Weeks 5-7:] Implementation of baseline GCN and GraphSAGE models. Hyperparameter tuning.
+%     \item[Weeks 8-9:] Advanced techniques (GAT, handling class imbalance). Comparison with non-graph baselines (e.g., XGBoost).
+%     \item[Week 10:] Final evaluation, visualization of fraud rings, and reporting.
+% \end{description}
+
+\section{Expected Outcomes}
+\begin{enumerate}
+    \item A functioning GNN pipeline capable of ingesting graph data.
+    \item A comparative analysis showing GNN performance vs. traditional ML models.
+    \item Visualizations demonstrating how the model identifies "fraud rings" or clusters.
+    % \item Documentation on how the model handles the "cold start" problem (new accounts).
+\end{enumerate}
+
+\end{document}
