@@ -149,9 +149,9 @@ Overall, the project shows that both classical machine learning and graph neural
 
 This suggests that graph learning is most valuable when the problem has enough relational structure to exploit, while high-quality engineered features can still make tree-based methods very competitive.
 
-## 8. Suggested Final Write-Up Sentence
+<!-- ## 8. Suggested Final Write-Up Sentence
 
 If you want a short conclusion sentence for the final report, you can use:
 
-> Across two fraud datasets, XGBoost achieved the strongest performance on the simpler Elliptic transaction graph, while the multi-task directed heterogeneous GNN performed best on the richer Elliptic++ graph, showing that graph-based supervision becomes more beneficial as relational structure and auxiliary node types increase.
+> Across two fraud datasets, XGBoost achieved the strongest performance on the simpler Elliptic transaction graph, while the multi-task directed heterogeneous GNN performed best on the richer Elliptic++ graph, showing that graph-based supervision becomes more beneficial as relational structure and auxiliary node types increase. -->
 
