@@ -77,8 +77,9 @@ The Elliptic++ notebook compares several graph-based designs:
 - Baseline GCN
 - Wallet-upgrade GCN
 - Directed heterogeneous GNN
-- Multi-task directed heterogeneous GNN
 - Address-pretraining followed by transaction fine-tuning
+- Multi-task directed heterogeneous GNN
+
 
 ## 4. Results
 
