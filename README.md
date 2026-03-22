@@ -8,7 +8,7 @@ This project compares:
 - graph neural networks on the original Elliptic Bitcoin transaction graph
 - heterogeneous graph models on Elliptic++
 
-The main deliverables are the notebooks in `notebooks/`, the baseline scripts in `TestModels/`, and the final write-up in `REPORT_DRAFT.md`.
+The main deliverables are the notebooks in `notebooks/`, the baseline scripts in `TestModels/`, and the final write-up in `REPORT_DRAFT.md` and `Fraud_Detection.tex`.
 
 ## Overview
 
@@ -19,7 +19,7 @@ This repository therefore studies two datasets:
 - `Elliptic Bitcoin`: a transaction-only graph
 - `Elliptic++`: a heterogeneous graph with transaction and address/wallet nodes
 
-The project uses temporal splits to avoid leakage from future transactions into past training data.
+The project uses temporal splits to avoid leakage from future transactions into past training data. The codebase also includes data download scripts, dataset splitters, notebook helpers, and saved figures/checkpoints from the final experiments.
 
 ## Repository Layout
 
@@ -42,9 +42,12 @@ notebooks/
   HeteroGATv2_elliptic_plus.ipynb
 TestModels/
   XGBoost.ipynb
+  xgboost4_formatted.ipynb
   logistic.ipynb
   GCN.ipynb
   train_elliptic_gnn.py
+REPORT_DRAFT.md
+Fraud_Detection.tex
 outputs/
   figures/
   models/
@@ -67,6 +70,8 @@ If you only want the data download utilities, install the minimal dataset depend
 ```bash
 python -m pip install -r scripts/requirements_elliptic.txt
 ```
+
+The project-wide Python dependencies live in `requirements.txt`.
 
 ## Data Download
 
@@ -117,6 +122,11 @@ Default ratio:
 
 The split scripts preserve chronology by assigning earlier time steps to train, middle time steps to validation, and later time steps to test.
 
+If you want the imported split tables instead of the raw data, use:
+
+- `scripts/split_elliptic_bitcoin_dataset.py` for Elliptic Bitcoin
+- `scripts/split_elliptic_plus_dataset.py` for Elliptic++
+
 ### Elliptic Bitcoin split
 
 ```bash
@@ -152,13 +162,20 @@ Outputs are written to `data/processed/elliptic_plus_splits/` by default.
 ### Elliptic Bitcoin
 
 - `notebooks/elliptic_EDA.ipynb`: exploratory analysis of the original transaction graph
-- `notebooks/GCN_elliptic.ipynb`: GCN baseline with temporal train/validation/test split
+- `notebooks/GCN_elliptic.ipynb`: GCN baseline with temporal train/validation/test split and validation-based early stopping
 
 ### Elliptic++
 
 - `notebooks/elliptic_plus_EDA.ipynb`: exploratory analysis of the transaction + address graph
 - `notebooks/GCN_elliptic_plus.ipynb`: transaction-level GCN baseline on Elliptic++
 - `notebooks/HeteroGATv2_elliptic_plus.ipynb`: heterogeneous GNN experiments on Elliptic++
+
+### Tabular baselines
+
+- `TestModels/XGBoost.ipynb`: Elliptic XGBoost baseline with temporal validation and test evaluation
+- `TestModels/xgboost4_formatted.ipynb`: Elliptic++ XGBoost experiment with engineered transaction and wallet features
+- `TestModels/logistic.ipynb`: logistic-regression baseline
+- `TestModels/GCN.ipynb`: notebook version of the Elliptic GCN baseline
 
 ### Notebook execution helper
 
@@ -233,6 +250,12 @@ The current report draft highlights the following trend:
 - On the original Elliptic Bitcoin dataset, the tabular XGBoost baseline is very strong.
 - On Elliptic++, the heterogeneous multi-task graph model performs best.
 
+Representative metrics from the current experiments:
+
+- Elliptic XGBoost test: illicit `F1 = 0.77`, `Precision = 0.81`, `Recall = 0.73`, `ROC-AUC = 0.9230`, `PR-AUC = 0.7932`
+- Elliptic GCN test: illicit `F1 = 0.1868`, `Precision = 0.1062`, `Recall = 0.7767`, `ROC-AUC = 0.8112`
+- Elliptic++ multi-task directed hetero GNN test: illicit `F1 = 0.2918`, `Precision = 0.1875`, `Recall = 0.6572`, `ROC-AUC = 0.8560`
+
 See `REPORT_DRAFT.md` for the full discussion and metrics table.
 
 ## Notes
@@ -240,3 +263,4 @@ See `REPORT_DRAFT.md` for the full discussion and metrics table.
 - The original Elliptic Bitcoin dataset has transactions as nodes and directed payment flows as edges.
 - Elliptic++ adds address/wallet nodes and multiple edge types, which makes heterogeneous graph models a better fit.
 - All split scripts and training code use temporal splits to reduce leakage.
+- The split and fetch scripts are importable modules, so they can be reused from notebooks or other Python code.
