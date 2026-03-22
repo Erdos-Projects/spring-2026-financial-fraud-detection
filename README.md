@@ -1,4 +1,4 @@
-# spring-2026-spec-proj
+# spring-2026-financial-fraud-detection
 
 Financial fraud detection on graph-structured data, using the Elliptic Bitcoin dataset and the richer Elliptic++ dataset.
 
