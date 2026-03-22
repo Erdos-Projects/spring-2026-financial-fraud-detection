@@ -37,8 +37,8 @@ The Elliptic dataset contains:
 
 For the Elliptic experiments, the project used a temporal split:
 
-- Training: steps 1 to 34
-- Testing: steps 35 to 49
+- In the XGBoost notebook, the labeled data were split into train steps 1 to 32, validation steps 33 to 34, and test steps 35 to 49.
+- In the GCN notebook, the split was train steps 1 to 34, validation steps 35 to 39, and test steps 40 to 49.
 
 This is important because it reflects a realistic fraud setting where future transactions must be predicted from past behavior.
 
@@ -85,16 +85,18 @@ The Elliptic++ notebook compares several graph-based designs:
 
 ### 4.1 Elliptic Results
 
-| Model | Illicit F1 | Precision | Recall | ROC-AUC | PR-AUC |
-|---|---:|---:|---:|---:|---:|
-| XGBoost | 0.77 | 0.81 | 0.73 | 0.9230 | 0.7932 |
-| GCN | 0.2410 | 0.1401 | 0.8596 | 0.8138 | N/A |
+| Model | Split | Illicit F1 | Precision | Recall | ROC-AUC | PR-AUC |
+|---|---|---:|---:|---:|---:|---:|
+| XGBoost | Validation | N/A | N/A | N/A | 0.9977 | 0.9760 |
+| XGBoost | Test | 0.77 | 0.81 | 0.73 | 0.9230 | 0.7932 |
+| GCN | Validation | 0.3477 | 0.2114 | 0.9776 | 0.9262 | N/A |
+| GCN | Test | 0.1868 | 0.1062 | 0.7767 | 0.8112 | N/A |
 
 #### Interpretation
 
-The XGBoost model performs strongly on the Elliptic dataset, especially in terms of illicit F1 and ROC-AUC. This suggests that the available transaction features are already highly informative and that a boosted tree model can exploit them effectively.
+The XGBoost model performs strongly on the Elliptic dataset, especially in terms of ROC-AUC and PR-AUC. Its validation ranking metrics are extremely high, and its test scores remain strong, which suggests that the available transaction features are already highly informative and that a boosted tree model can exploit them effectively.
 
-The GCN, by contrast, reaches very high recall for illicit nodes, but precision stays low. In practical terms, it finds many fraudulent transactions, but at the cost of many false positives. That pattern is typical on imbalanced graph fraud data when the default threshold is used.
+The GCN, by contrast, reaches very high recall for illicit nodes, but precision stays low. In practical terms, it finds many fraudulent transactions, but at the cost of many false positives. The gap between validation and test also shows that temporal drift matters on this dataset.
 
 ### 4.2 Elliptic++ Results
 
@@ -124,7 +126,7 @@ The wallet-upgrade GCN gives only a small improvement over the baseline. That su
 The results suggest three main conclusions:
 
 1. **Tabular models are very strong when the feature space is rich.**
-   - On Elliptic, XGBoost outperformed the GCN by a large margin on illicit F1 and ROC-AUC.
+   - On Elliptic, XGBoost reached 0.7932 PR-AUC and 0.9230 ROC-AUC on the test split, while the notebook GCN reached 0.1868 illicit F1 and 0.8112 ROC-AUC on the same test window.
 
 2. **Graph structure becomes more valuable as the dataset becomes richer and more heterogeneous.**
    - On Elliptic++, the best results came from the multi-task directed heterogeneous GNN, which could exploit transaction and address relations jointly.
@@ -155,4 +157,3 @@ This suggests that graph learning is most valuable when the problem has enough r
 If you want a short conclusion sentence for the final report, you can use:
 
 > Across two fraud datasets, XGBoost achieved the strongest performance on the simpler Elliptic transaction graph, while the multi-task directed heterogeneous GNN performed best on the richer Elliptic++ graph, showing that graph-based supervision becomes more beneficial as relational structure and auxiliary node types increase. -->
-
